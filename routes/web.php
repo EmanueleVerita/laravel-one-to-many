@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 // Controllers
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\Admin\MainController as AdminMainController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Dashboard\MovieController;
+use App\Http\Controllers\Admin\Dashboard\CategoryController;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,13 +23,27 @@ use App\Http\Controllers\Admin\MainController as AdminMainController;
 
 Route::get('/', [MainController::class, 'index'])->name('home');
 
-Route::prefix('admin')
+Route::middleware(['auth' , 'verified'])
     ->name('admin.')
-    ->middleware(['auth', 'verified'])
-    ->group(function () {
+    ->prefix('admin')
+    ->group(function (){
 
-    Route::get('/dashboard', [AdminMainController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard' , DashboardController::class , 'dashboard')->name('dashboard');
+    Route::resource('movies' , MovieController::class);
+
+    Route::resource('categories' , CategoryController::class);
+
 
 });
+
+
+//Route::prefix('admin')
+   // ->name('admin.')
+   // ->middleware(['auth', 'verified'])
+   // ->group(function () {
+
+ //   Route::get('/dashboard', [AdminMainController::class, 'dashboard'])->name('dashboard');
+
+//});
 
 require __DIR__.'/auth.php';
